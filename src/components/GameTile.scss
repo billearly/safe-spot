@@ -1,0 +1,7 @@
+.game-tile {
+  background-color: blue;
+
+  &--clicked {
+    background-color: red;
+  }
+}
