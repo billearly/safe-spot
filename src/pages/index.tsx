@@ -1,22 +1,27 @@
 import React, { useState } from "react"
 import { GameTile, TileGrid } from "../components";
-import { instantiateSafeBoard, updateTileAndNeighbors, addBombsToBoard } from "../managers";
+import {
+  instantiateSafeBoard,
+  addBombsToBoard,
+  updateTileAndNeighbors,
+  calculateDisplayNums
+} from "../managers";
 import { Tile } from "../types";
 import "./index.scss";
 
 const Home = () => {
-  const initialBoard = instantiateSafeBoard(6, 3);
+  const initialBoard = instantiateSafeBoard(5, 5);
 
-  const [isFirstClick, setIsFirstClick] = useState(true);
   const [board, setBoard] = useState(initialBoard);
+  const [isFirstClick, setIsFirstClick] = useState(true);
 
   const handleClick = (row: number, column: number) => {
-    let updatedBoard: Tile[][] = board;
+    //hacky deep copy
+    let updatedBoard: Tile[][] = JSON.parse(JSON.stringify(board));
 
     if (isFirstClick) {
-      console.log('first click');
-      // randomly populate the board with X number of bombs, except for the current tile and all neighbors (always click a 0 first)
-      // updatedBoard = addBombsToBoard(board, row, column, 2);
+      updatedBoard = addBombsToBoard(updatedBoard, row, column, 5);
+      updatedBoard = calculateDisplayNums(updatedBoard);
 
       setIsFirstClick(false);
     }
