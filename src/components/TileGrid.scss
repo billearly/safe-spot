@@ -1,5 +1,8 @@
 .tile-grid {
   display: grid;
-  grid-template-rows: 50px 50px 50px 50px 50px;
-  grid-template-columns: 50px 50px 50px 50px 50px;
+  grid-template-rows: repeat(var(--rows), 50px);
+  grid-template-columns: repeat(var(--columns), 50px);
+
+  row-gap: 0.1rem;
+  column-gap: 0.1rem;
 }

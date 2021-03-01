@@ -1,7 +1,15 @@
 .game-tile {
-  background-color: blue;
+  background-color: rgb(179, 241, 179);
+  height: 100%;
+  width: 100%;
+  border: 1px dashed gray;
+  border-radius: 0.1rem;
 
   &--clicked {
-    background-color: red;
+    background-color: rgb(131, 185, 247);
+  }
+
+  &--suspect {
+    background-color: rgb(238, 194, 111);
   }
 }

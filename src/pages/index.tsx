@@ -9,8 +9,12 @@ import {
 import { Tile } from "../types";
 import "./index.scss";
 
+const rows = 10;
+const columns = 15;
+const bombPercentage = 18;
+
 const Home = () => {
-  const initialBoard = instantiateSafeBoard(5, 5);
+  const initialBoard = instantiateSafeBoard(rows, columns);
 
   const [board, setBoard] = useState(initialBoard);
   const [isFirstClick, setIsFirstClick] = useState(true);
@@ -20,7 +24,7 @@ const Home = () => {
     let updatedBoard: Tile[][] = JSON.parse(JSON.stringify(board));
 
     if (isFirstClick) {
-      updatedBoard = addBombsToBoard(updatedBoard, row, column, 5);
+      updatedBoard = addBombsToBoard(updatedBoard, row, column, Math.floor(rows * columns * (bombPercentage / 100)));
       updatedBoard = calculateDisplayNums(updatedBoard);
 
       setIsFirstClick(false);
@@ -52,7 +56,10 @@ const Home = () => {
   }
 
   return (
-    <TileGrid>
+    <TileGrid
+      rows={rows}
+      columns={columns}
+    >
       {renderTiles()}
     </TileGrid>
   );
