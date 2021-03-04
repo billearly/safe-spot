@@ -6,6 +6,7 @@ type GameTileProps = {
   row: number;
   column: number;
   isRevealed: boolean;
+  isSafe: boolean;
   displayNum: number;
   handleClick: (row: number, column: number) => void;
 }
@@ -14,6 +15,7 @@ export const GameTile = ({
   row,
   column,
   isRevealed,
+  isSafe,
   displayNum,
   handleClick
 }: GameTileProps) => {
@@ -21,11 +23,14 @@ export const GameTile = ({
 
   const classes = classnames("game-tile", {
     "game-tile--clicked": isRevealed,
-    "game-tile--suspect": !isRevealed && isSuspect
+    "game-tile--suspect": !isRevealed && isSuspect,
+    "game-tile--bomb": isRevealed && !isSafe
   });
 
   const onClick = () => {
-    handleClick(row, column);
+    if (!isSuspect) {
+      handleClick(row, column);
+    }
   }
 
   const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -38,6 +43,20 @@ export const GameTile = ({
     setIsSuspect(!isSuspect);
   }
 
+  const getText = (): string => {
+    if (!isRevealed && isSuspect) {
+      return "😲";
+    }
+
+    if (isRevealed && !isSafe) {
+      return "💣";
+    }
+
+    if (isRevealed) {
+      return `${displayNum}`;
+    }
+  }
+
   return (
     <div>
       <button
@@ -45,13 +64,7 @@ export const GameTile = ({
         onClick={onClick}
         onContextMenu={handleContextMenu}
       >
-        {isRevealed &&
-          <p>{displayNum}</p>
-        }
-
-        {!isRevealed && isSuspect &&
-          <p>😲</p>
-        }
+        <p>{getText()}</p>
       </button>
     </div>
   )

@@ -1,11 +1,15 @@
 import React, { useState } from "react"
-import { GameTile, TileGrid } from "../components";
+import { GameTile, TileGrid, Scoreboard } from "../components";
 import {
   instantiateSafeBoard,
   addBombsToBoard,
   updateTileAndNeighbors,
-  calculateDisplayNums
+  calculateDisplayNums,
+  isBombSpot,
+  getBombSpots,
+  revealBombSpots
 } from "../managers";
+import { DateTime } from "luxon";
 import { Tile } from "../types";
 import "./index.scss";
 
@@ -15,22 +19,44 @@ const bombPercentage = 18;
 
 const Home = () => {
   const initialBoard = instantiateSafeBoard(rows, columns);
+  const initialBombSpots: Tile[] = [];
+  const numBombs = Math.floor(rows * columns * (bombPercentage / 100));
+  const numSafeSpots = (rows * columns) - numBombs;
+
+  const startDateTime = DateTime.now().toUTC();
 
   const [board, setBoard] = useState(initialBoard);
+  const [bombSpots, setBombSpots] = useState(initialBombSpots);
   const [isFirstClick, setIsFirstClick] = useState(true);
+  const [safeSpotsLeft, setSafeSpotsLeft] = useState(numSafeSpots);
+  const [isGameOver, setIsGameOver] = useState(false);
+
 
   const handleClick = (row: number, column: number) => {
+    if (isGameOver) {
+      return;
+    }
+
     //hacky deep copy
     let updatedBoard: Tile[][] = JSON.parse(JSON.stringify(board));
 
     if (isFirstClick) {
-      updatedBoard = addBombsToBoard(updatedBoard, row, column, Math.floor(rows * columns * (bombPercentage / 100)));
+      updatedBoard = addBombsToBoard(updatedBoard, row, column, numBombs);
       updatedBoard = calculateDisplayNums(updatedBoard);
 
+      setBombSpots(getBombSpots(updatedBoard));
       setIsFirstClick(false);
     }
 
-    updatedBoard = updateTileAndNeighbors(updatedBoard, row, column);
+    if (isBombSpot(updatedBoard, row, column)) {
+      setIsGameOver(true);
+      alert("Clicked on a bomb, game over");
+
+      updatedBoard = revealBombSpots(updatedBoard, bombSpots);
+    } else {
+      updatedBoard = updateTileAndNeighbors(updatedBoard, row, column);
+    }
+
     setBoard(updatedBoard);
   }
 
@@ -45,6 +71,7 @@ const Home = () => {
             row={row}
             column={column}
             isRevealed={board[row][column].isRevealed}
+            isSafe={board[row][column].isSafe}
             displayNum={board[row][column].displayNum}
             handleClick={handleClick}
           />
@@ -56,12 +83,21 @@ const Home = () => {
   }
 
   return (
-    <TileGrid
-      rows={rows}
-      columns={columns}
-    >
-      {renderTiles()}
-    </TileGrid>
+    <>
+      <TileGrid
+        rows={rows}
+        columns={columns}
+      >
+        {renderTiles()}
+      </TileGrid>
+
+      {!isGameOver &&
+        <Scoreboard
+          startDatetime={startDateTime}
+          spotsLeft={safeSpotsLeft}
+        />
+      }
+    </>
   );
 }
 

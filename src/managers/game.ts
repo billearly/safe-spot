@@ -9,6 +9,8 @@ export const instantiateSafeBoard = (rows: number, columns: number): Tile[][] =>
 
     for (var column = 0; column < columns; column++) {
       board[row][column] = {
+        row,
+        column,
         isSafe: true,
         isRevealed: false,
         displayNum: 0
@@ -84,6 +86,36 @@ export const updateTileAndNeighbors = (board: Tile[][], row: number, column: num
     board = updateTileAndNeighbors(board, row, column + 1);
     board = updateTileAndNeighbors(board, row, column - 1);
   }
+
+  return board;
+}
+
+export const isBombSpot = (board: Tile[][], row: number, column: number): boolean => {
+  return !board[row][column].isSafe;
+}
+
+export const getBombSpots = (board: Tile[][]): Tile[] => {
+  const bombSpots: Tile[] = [];
+
+  for (var row = 0; row < board.length; row++) {
+    for (var column = 0; column < board[0].length; column++) {
+      const spot = board[row][column];
+
+      if (!spot.isSafe) {
+        bombSpots.push(spot);
+      }
+    }
+  }
+
+  return bombSpots;
+}
+
+export const revealBombSpots = (board: Tile[][], bombSpots: Tile[]): Tile[][] => {
+  console.log(bombSpots.length);
+
+  bombSpots.forEach(bomb => {
+    board[bomb.row][bomb.column].isRevealed = true;
+  });
 
   return board;
 }
