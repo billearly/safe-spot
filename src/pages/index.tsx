@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { GameTile, TileGrid, Scoreboard } from "../components";
+import { GameTile, GameGrid, Scoreboard } from "../components";
 import {
   instantiateSafeBoard,
   addBombsToBoard,
@@ -11,7 +11,6 @@ import {
 } from "../managers";
 import { DateTime } from "luxon";
 import { Tile } from "../types";
-import "./index.scss";
 
 const rows = 10;
 const columns = 15;
@@ -84,12 +83,12 @@ const Home = () => {
 
   return (
     <>
-      <TileGrid
+      <GameGrid
         rows={rows}
         columns={columns}
       >
         {renderTiles()}
-      </TileGrid>
+      </GameGrid>
 
       {!isGameOver &&
         <Scoreboard

@@ -1,13 +1,13 @@
 import React, { CSSProperties } from "react";
-import "./TileGrid.scss";
+import "./GameGrid.scss";
 
-type TileGridProps = {
+type GameGridProps = {
   rows: number;
   columns: number;
   children: Node[]
 }
 
-export const TileGrid = ({ children, rows, columns }: TileGridProps) => {
+export const GameGrid = ({ children, rows, columns }: GameGridProps) => {
   const styles = {
     "--rows": rows,
     "--columns": columns

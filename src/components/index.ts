@@ -1,3 +1,3 @@
 export { GameTile } from "./GameTile";
-export { TileGrid } from "./TileGrid";
+export { GameGrid } from "./GameGrid";
 export { Scoreboard } from "./Scoreboard";
