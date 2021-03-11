@@ -22,6 +22,7 @@ export const GameTile = ({
   const [isSuspect, setIsSuspect] = useState(false);
 
   const classes = classnames("game-tile", {
+    "game-tile--unclicked": !isRevealed && !isSuspect,
     "game-tile--clicked": isRevealed,
     "game-tile--suspect": !isRevealed && isSuspect,
     "game-tile--bomb": isRevealed && !isSafe
@@ -35,12 +36,8 @@ export const GameTile = ({
 
   const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    toggleSuspicion();
-    return false;
-  }
-
-  const toggleSuspicion = () => {
     setIsSuspect(!isSuspect);
+    return false;
   }
 
   const getText = (): string => {
@@ -58,14 +55,14 @@ export const GameTile = ({
   }
 
   return (
-    <div>
-      <button
-        className={classes}
-        onClick={onClick}
-        onContextMenu={handleContextMenu}
-      >
-        <p>{getText()}</p>
-      </button>
-    </div>
+    <button
+      className={classes}
+      onClick={onClick}
+      onContextMenu={handleContextMenu}
+    >
+      <div className="game-tile__accent">
+        <span>{getText()}</span>
+      </div>
+    </button>
   )
 }

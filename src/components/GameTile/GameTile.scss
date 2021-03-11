@@ -1,19 +1,58 @@
 .game-tile {
-  background-color: rgb(179, 241, 179);
   height: 100%;
   width: 100%;
-  border: 1px dashed gray;
-  border-radius: 0.1rem;
+  border: none;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+
+  border-top: 3px dashed black;
+  border-right: 3px dashed black;
+
+  &--bomb {
+    background-color: rgb(235, 121, 121) !important;
+  }
+
+  &--unclicked {
+    &:nth-child(even) {
+      background-color: rgb(131, 247, 189);
+    }
+  
+    &:nth-child(odd) {
+      background-color: rgb(82, 189, 127);
+    }
+  }
 
   &--clicked {
-    background-color: rgb(131, 185, 247);
+    &:nth-child(even) {
+      background-color: rgb(131, 185, 247);
+    }
+    
+    &:nth-child(odd) {
+      background-color: rgb(82, 132, 189);
+    }
+
+    .game-tile__accent {
+      background-color: rgba(255, 255, 255, 0.185);
+      margin: 0;
+      height: 70%;
+      width: 70%;
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        padding-top: 2px;
+      }
+    }
   }
 
   &--suspect {
     background-color: rgb(238, 194, 111);
-  }
-
-  &--bomb {
-    background-color: rgb(214, 74, 74);
   }
 }

@@ -1,8 +1,6 @@
 .tile-grid {
   display: grid;
+  justify-content: center;
   grid-template-rows: repeat(var(--rows), 50px);
   grid-template-columns: repeat(var(--columns), 50px);
-
-  row-gap: 0.1rem;
-  column-gap: 0.1rem;
 }
