@@ -11,6 +11,7 @@ import {
 } from "../managers";
 import { DateTime } from "luxon";
 import { Tile } from "../types";
+import "./global.scss";
 
 const rows = 10;
 const columns = 15;
