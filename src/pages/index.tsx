@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { GameTile, GameGrid, Scoreboard } from "../components";
 import {
   instantiateSafeBoard,
@@ -7,7 +7,8 @@ import {
   calculateDisplayNums,
   isBombSpot,
   getBombSpots,
-  revealBombSpots
+  revealBombSpots,
+  getNumSafeSpotsLeft,
 } from "../managers";
 import { DateTime } from "luxon";
 import { Tile } from "../types";
@@ -21,7 +22,7 @@ const Home = () => {
   const initialBoard = instantiateSafeBoard(rows, columns);
   const initialBombSpots: Tile[] = [];
   const numBombs = Math.floor(rows * columns * (bombPercentage / 100));
-  const numSafeSpots = (rows * columns) - numBombs;
+  const numSafeSpots = rows * columns - numBombs;
 
   const startDateTime = DateTime.now().toUTC();
 
@@ -30,7 +31,6 @@ const Home = () => {
   const [isFirstClick, setIsFirstClick] = useState(true);
   const [safeSpotsLeft, setSafeSpotsLeft] = useState(numSafeSpots);
   const [isGameOver, setIsGameOver] = useState(false);
-
 
   const handleClick = (row: number, column: number) => {
     if (isGameOver) {
@@ -50,15 +50,23 @@ const Home = () => {
 
     if (isBombSpot(updatedBoard, row, column)) {
       setIsGameOver(true);
-      alert("Clicked on a bomb, game over");
-
       updatedBoard = revealBombSpots(updatedBoard, bombSpots);
+
+      alert("Clicked on a bomb, game over");
     } else {
       updatedBoard = updateTileAndNeighbors(updatedBoard, row, column);
+
+      const safeSpotsLeft = getNumSafeSpotsLeft(updatedBoard);
+      setSafeSpotsLeft(safeSpotsLeft);
+
+      if (safeSpotsLeft === 0) {
+        setIsGameOver(true);
+        alert("You win, you are so smart");
+      }
     }
 
     setBoard(updatedBoard);
-  }
+  };
 
   const renderTiles = () => {
     let tiles = [];
@@ -80,25 +88,19 @@ const Home = () => {
     }
 
     return tiles;
-  }
+  };
 
   return (
     <>
-      <GameGrid
-        rows={rows}
-        columns={columns}
-      >
+      <GameGrid rows={rows} columns={columns}>
         {renderTiles()}
       </GameGrid>
 
-      {!isGameOver &&
-        <Scoreboard
-          startDatetime={startDateTime}
-          spotsLeft={safeSpotsLeft}
-        />
-      }
+      {!isGameOver && !isFirstClick && (
+        <Scoreboard startDatetime={startDateTime} spotsLeft={safeSpotsLeft} />
+      )}
     </>
   );
-}
+};
 
 export default Home;

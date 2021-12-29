@@ -9,7 +9,7 @@ type GameTileProps = {
   isSafe: boolean;
   displayNum: number;
   handleClick: (row: number, column: number) => void;
-}
+};
 
 export const GameTile = ({
   row,
@@ -17,7 +17,7 @@ export const GameTile = ({
   isRevealed,
   isSafe,
   displayNum,
-  handleClick
+  handleClick,
 }: GameTileProps) => {
   const [isSuspect, setIsSuspect] = useState(false);
 
@@ -25,24 +25,24 @@ export const GameTile = ({
     "game-tile--unclicked": !isRevealed && !isSuspect,
     "game-tile--clicked": isRevealed,
     "game-tile--suspect": !isRevealed && isSuspect,
-    "game-tile--bomb": isRevealed && !isSafe
+    "game-tile--bomb": isRevealed && !isSafe,
   });
 
   const onClick = () => {
     if (!isSuspect) {
       handleClick(row, column);
     }
-  }
+  };
 
   const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsSuspect(!isSuspect);
     return false;
-  }
+  };
 
   const getText = (): string => {
     if (!isRevealed && isSuspect) {
-      return "😲";
+      return "🚩";
     }
 
     if (isRevealed && !isSafe) {
@@ -52,7 +52,7 @@ export const GameTile = ({
     if (isRevealed) {
       return `${displayNum}`;
     }
-  }
+  };
 
   return (
     <button
@@ -64,5 +64,5 @@ export const GameTile = ({
         <span>{getText()}</span>
       </div>
     </button>
-  )
-}
+  );
+};

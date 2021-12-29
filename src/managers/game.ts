@@ -1,6 +1,9 @@
 import { Tile } from "../types";
 
-export const instantiateSafeBoard = (rows: number, columns: number): Tile[][] => {
+export const instantiateSafeBoard = (
+  rows: number,
+  columns: number
+): Tile[][] => {
   const board: Tile[][] = [];
 
   for (var row = 0; row < rows; row++) {
@@ -13,15 +16,20 @@ export const instantiateSafeBoard = (rows: number, columns: number): Tile[][] =>
         column,
         isSafe: true,
         isRevealed: false,
-        displayNum: 0
-      }
+        displayNum: 0,
+      };
     }
   }
 
   return board;
-}
+};
 
-export const addBombsToBoard = (board: Tile[][], row: number, column: number, numBombs: number): Tile[][] => {
+export const addBombsToBoard = (
+  board: Tile[][],
+  row: number,
+  column: number,
+  numBombs: number
+): Tile[][] => {
   const maxRow = board.length;
   const maxColumn = board[0].length;
 
@@ -31,18 +39,20 @@ export const addBombsToBoard = (board: Tile[][], row: number, column: number, nu
 
     // if the spot isn't already a bomb
     // and its not the clicked spot or any of its neighbors
-    if (board[bombRow][bombColumn].isSafe && (Math.abs(bombRow - row) > 1 || Math.abs(bombColumn - column) > 1)) {
+    if (
+      board[bombRow][bombColumn].isSafe &&
+      (Math.abs(bombRow - row) > 1 || Math.abs(bombColumn - column) > 1)
+    ) {
       board[bombRow][bombColumn].isSafe = false;
       numBombs -= 1;
-    }
-    else {
+    } else {
       // try again
       continue;
     }
   }
 
   return board;
-}
+};
 
 export const calculateDisplayNums = (board: Tile[][]): Tile[][] => {
   for (var row = 0; row < board.length; row++) {
@@ -52,11 +62,20 @@ export const calculateDisplayNums = (board: Tile[][]): Tile[][] => {
   }
 
   return board;
-}
+};
 
-export const updateTileAndNeighbors = (board: Tile[][], row: number, column: number): Tile[][] => {
+export const updateTileAndNeighbors = (
+  board: Tile[][],
+  row: number,
+  column: number
+): Tile[][] => {
   // First off, does this tile exist
-  if (row < 0 || column < 0 || row >= board.length || column >= board[0].length) {
+  if (
+    row < 0 ||
+    column < 0 ||
+    row >= board.length ||
+    column >= board[0].length
+  ) {
     return board;
   }
 
@@ -69,14 +88,14 @@ export const updateTileAndNeighbors = (board: Tile[][], row: number, column: num
 
   // does this belong in here? end game is ill defined right now
   if (!board[row][column].isSafe) {
-    alert('you clicked on a bomb');
+    alert("you clicked on a bomb");
     return board;
   }
 
   clickedTile.isRevealed = true;
 
   // update the board for each neighbor if this is a 0
-  if (clickedTile.displayNum == 0) {
+  if (clickedTile.displayNum === 0) {
     board = updateTileAndNeighbors(board, row - 1, column);
     board = updateTileAndNeighbors(board, row - 1, column + 1);
     board = updateTileAndNeighbors(board, row - 1, column - 1);
@@ -88,11 +107,15 @@ export const updateTileAndNeighbors = (board: Tile[][], row: number, column: num
   }
 
   return board;
-}
+};
 
-export const isBombSpot = (board: Tile[][], row: number, column: number): boolean => {
+export const isBombSpot = (
+  board: Tile[][],
+  row: number,
+  column: number
+): boolean => {
   return !board[row][column].isSafe;
-}
+};
 
 export const getBombSpots = (board: Tile[][]): Tile[] => {
   const bombSpots: Tile[] = [];
@@ -108,9 +131,12 @@ export const getBombSpots = (board: Tile[][]): Tile[] => {
   }
 
   return bombSpots;
-}
+};
 
-export const revealBombSpots = (board: Tile[][], bombSpots: Tile[]): Tile[][] => {
+export const revealBombSpots = (
+  board: Tile[][],
+  bombSpots: Tile[]
+): Tile[][] => {
   console.log(bombSpots.length);
 
   bombSpots.forEach(bomb => {
@@ -118,27 +144,54 @@ export const revealBombSpots = (board: Tile[][], bombSpots: Tile[]): Tile[][] =>
   });
 
   return board;
-}
+};
 
-const calculateDisplayNum = (board: Tile[][], row: number, column: number): number => {
+export const getNumSafeSpotsLeft = (board: Tile[][]): number => {
+  let numSpots = 0;
+
+  for (let row = 0; row < board.length; row++) {
+    for (let column = 0; column < board[0].length; column++) {
+      const spot = board[row][column];
+
+      if (spot.isSafe && !spot.isRevealed) {
+        numSpots++;
+      }
+    }
+  }
+
+  return numSpots;
+};
+
+const calculateDisplayNum = (
+  board: Tile[][],
+  row: number,
+  column: number
+): number => {
   // Is this tile a bomb
   if (!board[row][column].isSafe) {
     return -1;
   }
 
   // Check all directions
-  return getNeighborBombCount(board, row - 1, column) + //N
+  return (
+    getNeighborBombCount(board, row - 1, column) + //N
     getNeighborBombCount(board, row - 1, column + 1) + // NE
     getNeighborBombCount(board, row, column + 1) + // E
     getNeighborBombCount(board, row + 1, column + 1) + //SE
     getNeighborBombCount(board, row + 1, column) + //S
     getNeighborBombCount(board, row + 1, column - 1) + //SW
     getNeighborBombCount(board, row, column - 1) + //W
-    getNeighborBombCount(board, row - 1, column - 1); //NW
-}
+    getNeighborBombCount(board, row - 1, column - 1) //NW
+  );
+};
 
-const getNeighborBombCount = (board: Tile[][], neighborRow: number, neighborColumn: number): number => {
-  const neighborExists = neighborRow >= 0 &&
+const getNeighborBombCount = (
+  board: Tile[][],
+  neighborRow: number,
+  neighborColumn: number
+): number => {
+  const neighborExists =
+    neighborRow >= 0 &&
     neighborRow < board.length &&
     neighborColumn >= 0 &&
     neighborColumn < board[0].length;
@@ -148,4 +201,4 @@ const getNeighborBombCount = (board: Tile[][], neighborRow: number, neighborColu
   }
 
   return board[neighborRow][neighborColumn].isSafe ? 0 : 1;
-}
+};
